@@ -30,11 +30,15 @@
 		var rand = Math.random()*(max-min)+min;
 		return Math.round(rand);
 	};
+	// необходимые названия кнопок
 	var startBtn = 'Готов';
 	var redyBtn = 'Прочитал';
 	var finishBtn = 'Улучшить результат';
+	/////////////////////////////////////////////////
 	var random = randomName(0, 2);
-	var text = document.querySelector('.test-content');
+	var p = document.querySelector('.test-content');
+	var img = p.querySelector('img');
+	var text = p.querySelector('p');
 	var timer = document.querySelector('.timer');
 	var timerStart;
 	var btn = document.querySelector('.test-read');
@@ -45,14 +49,27 @@
 		if (btn.firstChild.nodeValue == startBtn) {
 			text.textContent = content[random].testCont;
 			timer.classList.add('show');
-			var timerVal = 1;
+// запуск таймера
+			var timerVal = 0;
+			var minute = 0;
 			timerStart = setInterval(function() {
-				timer.textContent = timerVal++;
+				timerVal++
+				if (timerVal < 10) {
+					timerVal = '0' + timerVal;
+				};
+				
+				if (timerVal%60 == 0) {
+					timerVal = '00';
+					minute++;
+				}
+				timer.textContent = minute + ' : ' + timerVal;
 			}, 1000);
 			btn.textContent = redyBtn;
 
 		} else if (btn.firstChild.nodeValue == redyBtn){
 			clearInterval(timerStart);
+			console.log(timer.innerHTML.split(''));
+			img.classList.add('hidden');
 			text.textContent = content[random].question;
 			text.style = 'text-align:center';
 			quest.classList.add('show');
@@ -68,7 +85,12 @@
 	quest.addEventListener('click', function(e) {
 		if (e.target.innerHTML === content[random].answer) {
 			alert('Отлично');
-			var res = Math.round(content[random].word*60/timer.innerHTML);
+
+			var timerRes = timer.innerHTML.split('');
+			var timerR = parseInt(timerRes[0]*60)+parseInt(timerRes[4]+timerRes[5]);
+			console.log(timerR);
+
+			var res = Math.round(content[random].word*60/timerR);
 			var str;
 			if (res%10 == 1&&res!==11) {
 				str = 'слово';
